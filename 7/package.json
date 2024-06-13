@@ -1,0 +1,16 @@
+{
+  "name": "nand2tetris-vm-translator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "translate": "ts-node index.ts"
+  },
+  "author": "argusherd",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
