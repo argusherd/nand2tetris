@@ -8,26 +8,98 @@
  * consists of 32,768 words, each holding a 16-bit binary number.
  */ 
 class Memory {
+    static Array ram, freeList;
 
     /** Initializes the class. */
     function void init() {
+        let ram = 0;
+
+        // heap address 2048--16383
+        let freeList = 2048;
+
+        // 0 next segment
+        // 1 segment block size
+        let freeList[0] = null;
+        let freeList[1] = 16383 - 2048 + 1 - 2;
+
+        return;
     }
 
     /** Returns the RAM value at the given address. */
     function int peek(int address) {
+        return ram[address];
     }
 
     /** Sets the RAM value at the given address to the given value. */
     function void poke(int address, int value) {
+        let ram[address] = value;
+        return;
     }
 
     /** Finds an available RAM block of the given size and returns
      *  a reference to its base address. */
     function int alloc(int size) {
+        var int allocSize;
+        var Array segment;
+
+        let allocSize = size + 2; // plus 'next pointer' and 'block size'
+
+        if (freeList[1] > allocSize) {
+            // chop from the end of the heap
+            let freeList[1] = freeList[1] - allocSize;
+            let segment = freeList + 2 + freeList[1];
+            let segment[0] = null;
+            let segment[1] = size;
+        } else {
+            let segment = Memory.bestFit(size);
+        }
+
+        // actual block pointer
+        return segment + 2;
     }
 
     /** De-allocates the given object (cast as an array) by making
      *  it available for future allocations. */
     function void deAlloc(Array o) {
+        var Array endOfList;
+
+        let endOfList = freeList;
+
+        // follow free list until end
+        while (~(endOfList[0] = null)) {
+            let endOfList = endOfList[0];
+        }
+
+        // set next element of list to dealloc'd & mark it as end of list
+        let endOfList[0] = o - 2;
+        let ram[o] = null;
+
+        return;
     }    
+
+    function Array bestFit(int size) {
+        var Array currentSegment, segment;
+        var int targetSize;
+
+        let targetSize = size + 2;
+        let currentSegment = freeList;
+
+        // find available address
+        while (currentSegment[1] < targetSize) {
+            // out of memory
+            if (currentSegment[0] = null) {
+                return 0;
+            } else {
+                let currentSegment = currentSegment[0];
+            }
+        }
+
+        // shrink currentSegment
+        let currentSegment[1] = currentSegment[1] - targetSize;
+        let segment = currentSegment + 2 + currentSegment[1];
+        let segment[0] = null;
+        let segment[1] = size;
+
+        return segment;
+    }
 }

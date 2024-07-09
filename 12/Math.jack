@@ -15,6 +15,19 @@ class Math {
 
     // Initializes the Math library.
     function void init() {
+        var int i, mask;
+
+        let powersOfTwo = Array.new(16);
+        let i = 0;
+        let mask = 1;
+
+        while (i < 16) {
+            let powersOfTwo[i] = mask;
+            let i = i + 1;
+            let mask = mask + mask;
+        }
+        
+        return;
     }
 
     /** Returns the product of x and y. 
@@ -22,6 +35,20 @@ class Math {
      *  in an expression, it handles it by invoking this method. 
      *  Thus, in Jack, x * y and Math.multiply(x,y) return the same value. */
     function int multiply(int x, int y) {
+        var int sum, shiftedX, i;
+        let sum = 0;
+        let shiftedX = x;
+        let i = 0;
+
+        while (i < 16) {
+            if (~((powersOfTwo[i] & y) = 0)) {
+                let sum = sum + shiftedX;
+            }
+            let shiftedX = shiftedX + shiftedX;
+            let i = i + 1;
+        }
+
+        return sum;
     }
 
     /** Returns the integer part of x / y.
@@ -29,21 +56,78 @@ class Math {
      *  an an expression, it handles it by invoking this method.
      *  Thus, x/y and Math.divide(x,y) return the same value. */
     function int divide(int x, int y) {
+        var int q, res;
+        var boolean isPositive;
+
+        let isPositive = (x < 0) = (y < 0);
+        let x = Math.abs(x);
+        let y = Math.abs(y);
+
+        // prevent overflow
+        if (y > x) {
+            return 0;
+        }
+
+        let q = Math.divide(x, y + y);
+
+        if ((x - (q + q * y)) < y) {
+            let res = q + q;
+        } else {
+            let res = q + q + 1;
+        }
+
+        if (isPositive) {
+            return res;
+        }
+
+        return -res;
     }
 
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
+        var int y, i, sqrted;
+
+        let y = 0;
+        let i = 7;
+
+        while (i > -1) {
+            let sqrted = y + powersOfTwo[i];
+
+            // prevent overflow
+            if (~(sqrted * sqrted > x) & (sqrted * sqrted > 0)) {
+                let y = sqrted;
+            }
+
+            let i = i - 1;
+        }
+
+        return y;
     }
 
     /** Returns the greater value. */
     function int max(int a, int b) {
+        if (a > b) {
+            return a;
+        }
+
+        return b;
     }
 
     /** Returns the smaller value. */
     function int min(int a, int b) {
+        if (a < b) {
+            return a;
+        }
+
+        return b;
     }
 
     /** Returns the absolute value of x. */
     function int abs(int x) {
+        if (x < 0) {
+            return -x;
+        }
+
+        return x;
     }
 }
